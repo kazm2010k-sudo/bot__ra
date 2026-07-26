@@ -1,9 +1,0 @@
-Flask
-Flask-Session
-instagrapi
-aiohttp
-requests
-fake-useragent
-colorama
-beautifulsoup4
-lxml
