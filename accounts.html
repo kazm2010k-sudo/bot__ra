@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ site_name }} - الحسابات</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f0f2f5;
+            font-family: 'Tahoma', 'Arial', sans-serif;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #2d1b69 0%, #1a0f3e 100%);
+            padding: 20px 0;
+            color: white;
+        }
+        .sidebar .logo {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 24px;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.7);
+            padding: 12px 25px;
+            border-radius: 12px;
+            margin: 5px 15px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+        .sidebar .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .sidebar .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .sidebar .nav-link i {
+            margin-left: 10px;
+        }
+        .main-content {
+            padding: 30px;
+        }
+        .top-bar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .table-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(118, 75, 162, 0.4);
+            color: white;
+        }
+        .btn-danger-gradient {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 12px;
+        }
+        .btn-danger-gradient:hover {
+            color: white;
+        }
+        .badge-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .badge-status.active { background: #198754; color: white; }
+        .badge-status.used { background: #0dcaf0; color: #000; }
+        .badge-status.suspended { background: #ffc107; color: #000; }
+        .badge-status.banned { background: #dc3545; color: white; }
+        .table th {
+            color: #2d1b69;
+        }
+        .filter-btn {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 col-lg-2 sidebar">
+                <div class="logo">🚀 {{ site_name }}</div>
+                <nav class="nav flex-column">
+                    <a href="{{ url_for('dashboard') }}" class="nav-link">
+                        <i class="bi bi-speedometer2"></i> لوحة التحكم
+                    </a>
+                    <a href="{{ url_for('accounts') }}" class="nav-link active">
+                        <i class="bi bi-instagram"></i> الحسابات
+                    </a>
+                    <a href="{{ url_for('follows') }}" class="nav-link">
+                        <i class="bi bi-arrow-right-circle"></i> الرشقات
+                    </a>
+                    <a href="{{ url_for('settings') }}" class="nav-link">
+                        <i class="bi bi-gear"></i> الإعدادات
+                    </a>
+                    <a href="{{ url_for('logs') }}" class="nav-link">
+                        <i class="bi bi-clock-history"></i> السجلات
+                    </a>
+                    <a href="{{ url_for('logout') }}" class="nav-link" style="color: #ff6b6b;">
+                        <i class="bi bi-box-arrow-left"></i> تسجيل الخروج
+                    </a>
+                </nav>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-10 col-lg-10 main-content">
+                <!-- Top Bar -->
+                <div class="top-bar">
+                    <div>
+                        <h4 class="mb-0"><i class="bi bi-instagram"></i> إدارة الحسابات</h4>
+                    </div>
+                    <div>
+                        <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#createAccountModal">
+                            <i class="bi bi-plus-circle"></i> إنشاء حساب جديد
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Filter -->
+                <div class="mb-3">
+                    <a href="{{ url_for('accounts', status='all') }}" class="btn btn-outline-secondary btn-sm filter-btn">الكل</a>
+                    <a href="{{ url_for('accounts', status='active') }}" class="btn btn-success btn-sm filter-btn">نشط</a>
+                    <a href="{{ url_for('accounts', status='suspended') }}" class="btn btn-warning btn-sm filter-btn">معلق</a>
+                    <a href="{{ url_for('accounts', status='banned') }}" class="btn btn-danger btn-sm filter-btn">محظور</a>
+                </div>
+                
+                <!-- Accounts Table -->
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>اسم المستخدم</th>
+                                    <th>البريد</th>
+                                    <th>الحالة</th>
+                                    <th>المتابعات</th>
+                                    <th>آخر استخدام</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for account in accounts %}
+                                <tr>
+                                    <td>{{ account.id }}</td>
+                                    <td><strong>{{ account.username }}</strong></td>
+                                    <td>{{ account.email }}</td>
+                                    <td>
+                                        <span class="badge-status {{ account.status }}">
+                                            {% if account.status == 'active' %}نشط
+                                            {% elif account.status == 'used' %}مستخدم
+                                            {% elif account.status == 'suspended' %}معلق
+                                            {% else %}محظور{% endif %}
+                                        </span>
+                                    </td>
+                                    <td>{{ account.follow_count or 0 }}</td>
+                                    <td>{{ account.last_used[:16] if account.last_used else 'لم يستخدم' }}</td>
+                                    <td>
+                                        <form method="POST" action="{{ url_for('delete_account', account_id=account.id) }}" style="display:inline;">
+                                            <button type="submit" class="btn btn-danger-gradient btn-sm" onclick="return confirm('هل أنت متأكد من حذف هذا الحساب؟')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% if not accounts %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">لا توجد حسابات</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Create Account Modal -->
+    <div class="modal fade" id="createAccountModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle"></i> إنشاء حساب جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="POST" action="{{ url_for('create_account') }}">
+                    <div class="modal-body">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> سيتم إنشاء حساب جديد باستخدام بريد مؤقت وبروكسي.
+                            قد تستغرق العملية بضع دقائق.
+                        </div>
+                        <p class="text-muted">سيتم إنشاء الحساب بشكل تلقائي باستخدام معلومات عشوائية.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-gradient">
+                            <i class="bi bi-plus-circle"></i> إنشاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

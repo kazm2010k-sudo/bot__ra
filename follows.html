@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ site_name }} - الرشقات</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f0f2f5;
+            font-family: 'Tahoma', 'Arial', sans-serif;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #2d1b69 0%, #1a0f3e 100%);
+            padding: 20px 0;
+            color: white;
+        }
+        .sidebar .logo {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 24px;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.7);
+            padding: 12px 25px;
+            border-radius: 12px;
+            margin: 5px 15px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+        .sidebar .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .sidebar .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .sidebar .nav-link i {
+            margin-left: 10px;
+        }
+        .main-content {
+            padding: 30px;
+        }
+        .top-bar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .table-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(118, 75, 162, 0.4);
+            color: white;
+        }
+        .badge-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .badge-status.pending { background: #ffc107; color: #000; }
+        .badge-status.running { background: #0dcaf0; color: #000; }
+        .badge-status.completed { background: #198754; color: white; }
+        .badge-status.failed { background: #dc3545; color: white; }
+        .price-box {
+            background: linear-gradient(135deg, #2d1b69 0%, #1a0f3e 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+        .price-box .price {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .table th {
+            color: #2d1b69;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 col-lg-2 sidebar">
+                <div class="logo">🚀 {{ site_name }}</div>
+                <nav class="nav flex-column">
+                    <a href="{{ url_for('dashboard') }}" class="nav-link">
+                        <i class="bi bi-speedometer2"></i> لوحة التحكم
+                    </a>
+                    <a href="{{ url_for('accounts') }}" class="nav-link">
+                        <i class="bi bi-instagram"></i> الحسابات
+                    </a>
+                    <a href="{{ url_for('follows') }}" class="nav-link active">
+                        <i class="bi bi-arrow-right-circle"></i> الرشقات
+                    </a>
+                    <a href="{{ url_for('settings') }}" class="nav-link">
+                        <i class="bi bi-gear"></i> الإعدادات
+                    </a>
+                    <a href="{{ url_for('logs') }}" class="nav-link">
+                        <i class="bi bi-clock-history"></i> السجلات
+                    </a>
+                    <a href="{{ url_for('logout') }}" class="nav-link" style="color: #ff6b6b;">
+                        <i class="bi bi-box-arrow-left"></i> تسجيل الخروج
+                    </a>
+                </nav>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-10 col-lg-10 main-content">
+                <!-- Top Bar -->
+                <div class="top-bar">
+                    <div>
+                        <h4 class="mb-0"><i class="bi bi-arrow-right-circle"></i> إدارة الرشقات</h4>
+                    </div>
+                    <div>
+                        <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#startFollowModal">
+                            <i class="bi bi-plus-circle"></i> رشقة جديدة
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Price Box -->
+                <div class="price-box">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h5 class="mb-2">💰 سعر الرشقة</h5>
+                            <div class="price">{{ price_per_1000 }}$ لكل 1000 متابع</div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <small class="opacity-75">الأسعار بالدولار الأمريكي</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Follows Table -->
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>الهدف</th>
+                                    <th>العدد</th>
+                                    <th>المكتمل</th>
+                                    <th>الفاشل</th>
+                                    <th>الحالة</th>
+                                    <th>التاريخ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for follow in follows %}
+                                <tr>
+                                    <td>{{ follow.id }}</td>
+                                    <td><strong>{{ follow.target_username }}</strong></td>
+                                    <td>{{ follow.total_count }}</td>
+                                    <td>{{ follow.completed_count or 0 }}</td>
+                                    <td>{{ follow.failed_count or 0 }}</td>
+                                    <td>
+                                        <span class="badge-status {{ follow.status }}">
+                                            {% if follow.status == 'pending' %}معلق
+                                            {% elif follow.status == 'running' %}جاري
+                                            {% elif follow.status == 'completed' %}مكتمل
+                                            {% else %}فشل{% endif %}
+                                        </span>
+                                    </td>
+                                    <td>{{ follow.created_at[:16] if follow.created_at else '' }}</td>
+                                </tr>
+                                {% endfor %}
+                                {% if not follows %}
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">لا توجد رشقات</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Start Follow Modal -->
+    <div class="modal fade" id="startFollowModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle"></i> رشقة جديدة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="POST" action="{{ url_for('start_follow') }}">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">اسم المستخدم المستهدف</label>
+                            <input type="text" name="target" class="form-control" placeholder="مثال: kayo_i" required>
+                            <small class="text-muted">أدخل اسم المستخدم بدون @</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">عدد المتابعين</label>
+                            <select name="count" class="form-select" required>
+                                <option value="30">30 متابع</option>
+                                <option value="100">100 متابع</option>
+                                <option value="500">500 متابع</option>
+                                <option value="1000">1000 متابع ({{ price_per_1000 }}$)</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> سيتم توزيع الرشقة على يومين تلقائياً.
+                            <br>تأكد من وجود حسابات نشطة كافية.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-gradient">
+                            <i class="bi bi-play-fill"></i> بدء الرشقة
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

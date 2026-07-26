@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ site_name }} - لوحة التحكم</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f0f2f5;
+            font-family: 'Tahoma', 'Arial', sans-serif;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #2d1b69 0%, #1a0f3e 100%);
+            padding: 20px 0;
+            color: white;
+        }
+        .sidebar .logo {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 24px;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.7);
+            padding: 12px 25px;
+            border-radius: 12px;
+            margin: 5px 15px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+        .sidebar .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .sidebar .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .sidebar .nav-link i {
+            margin-left: 10px;
+        }
+        .main-content {
+            padding: 30px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            border-right: 4px solid #764ba2;
+            margin-bottom: 20px;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2d1b69;
+        }
+        .stat-card .label {
+            color: #888;
+            font-size: 14px;
+        }
+        .stat-card .icon {
+            font-size: 40px;
+            color: #764ba2;
+            opacity: 0.3;
+        }
+        .top-bar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .table-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .badge-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .badge-status.pending { background: #ffc107; color: #000; }
+        .badge-status.running { background: #0dcaf0; color: #000; }
+        .badge-status.completed { background: #198754; color: white; }
+        .badge-status.failed { background: #dc3545; color: white; }
+        .table th {
+            color: #2d1b69;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 col-lg-2 sidebar">
+                <div class="logo">🚀 {{ site_name }}</div>
+                <nav class="nav flex-column">
+                    <a href="{{ url_for('dashboard') }}" class="nav-link active">
+                        <i class="bi bi-speedometer2"></i> لوحة التحكم
+                    </a>
+                    <a href="{{ url_for('accounts') }}" class="nav-link">
+                        <i class="bi bi-instagram"></i> الحسابات
+                    </a>
+                    <a href="{{ url_for('follows') }}" class="nav-link">
+                        <i class="bi bi-arrow-right-circle"></i> الرشقات
+                    </a>
+                    <a href="{{ url_for('settings') }}" class="nav-link">
+                        <i class="bi bi-gear"></i> الإعدادات
+                    </a>
+                    <a href="{{ url_for('logs') }}" class="nav-link">
+                        <i class="bi bi-clock-history"></i> السجلات
+                    </a>
+                    <a href="{{ url_for('logout') }}" class="nav-link" style="color: #ff6b6b;">
+                        <i class="bi bi-box-arrow-left"></i> تسجيل الخروج
+                    </a>
+                </nav>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-10 col-lg-10 main-content">
+                <!-- Top Bar -->
+                <div class="top-bar">
+                    <div>
+                        <h4 class="mb-0">مرحباً، {{ session.username }}</h4>
+                        <small class="text-muted">لوحة التحكم الرئيسية</small>
+                    </div>
+                    <div>
+                        <span class="badge bg-success"><i class="bi bi-circle-fill"></i> نشط</span>
+                    </div>
+                </div>
+                
+                <!-- Stats -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="label">حسابات إنستغرام</div>
+                                    <div class="number">{{ total_accounts }}</div>
+                                </div>
+                                <div class="icon"><i class="bi bi-instagram"></i></div>
+                            </div>
+                            <div class="mt-2">
+                                <span class="badge bg-success">{{ active_accounts }} نشط</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="label">الرشقات</div>
+                                    <div class="number">{{ total_follows }}</div>
+                                </div>
+                                <div class="icon"><i class="bi bi-arrow-right-circle"></i></div>
+                            </div>
+                            <div class="mt-2">
+                                <span class="badge bg-success">{{ completed_follows }} مكتملة</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="label">بروكسيات عاملة</div>
+                                    <div class="number">{{ working_proxies }}</div>
+                                </div>
+                                <div class="icon"><i class="bi bi-globe"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="label">الإصدار</div>
+                                    <div class="number" style="font-size: 20px;">1.0.0</div>
+                                </div>
+                                <div class="icon"><i class="bi bi-code-square"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Follows -->
+                <div class="table-card">
+                    <h5 class="mb-3"><i class="bi bi-clock-history"></i> آخر الرشقات</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>الهدف</th>
+                                    <th>العدد</th>
+                                    <th>المكتمل</th>
+                                    <th>الحالة</th>
+                                    <th>التاريخ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for follow in recent_follows %}
+                                <tr>
+                                    <td>{{ follow.id }}</td>
+                                    <td>{{ follow.target_username }}</td>
+                                    <td>{{ follow.total_count }}</td>
+                                    <td>{{ follow.completed_count or 0 }}</td>
+                                    <td>
+                                        <span class="badge-status {{ follow.status }}">
+                                            {% if follow.status == 'pending' %}معلق
+                                            {% elif follow.status == 'running' %}جاري
+                                            {% elif follow.status == 'completed' %}مكتمل
+                                            {% else %}فشل{% endif %}
+                                        </span>
+                                    </td>
+                                    <td>{{ follow.created_at[:16] if follow.created_at else '' }}</td>
+                                </tr>
+                                {% endfor %}
+                                {% if not recent_follows %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">لا توجد رشقات</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
