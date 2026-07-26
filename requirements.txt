@@ -1,0 +1,9 @@
+Flask
+Flask-Session
+instagrapi
+aiohttp
+requests
+fake-useragent
+beautifulsoup4
+lxml
+gunicorn
